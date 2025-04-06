@@ -345,50 +345,68 @@ class DataCenterSimulator(QMainWindow):
         right_panel.setLayout(right_layout)
         
         
-        vis_area = QScrollArea()
-        vis_area.setWidgetResizable(True)
+                
+        right_panel = QWidget()
+        right_layout = QHBoxLayout()
+        right_panel.setLayout(right_layout)
+
         
-        
-        self.dc_container = QWidget()
-        self.dc_layout = QVBoxLayout()
-        self.dc_container.setLayout(self.dc_layout)
-        
-        
+        image_container = QWidget()
+        image_layout = QVBoxLayout()
+        image_container.setLayout(image_layout)
+
         self.dc_image = QLabel()
         pixmap = QPixmap(image_path)
-        self.dc_image.setPixmap(pixmap)
+        self.dc_image.setPixmap(pixmap.scaled(800, 600, Qt.AspectRatioMode.KeepAspectRatio))
         self.dc_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.dc_image.setMinimumSize(800, 600)
+        image_layout.addWidget(self.dc_image)
+
         
-        self.rack_grid = QWidget(self.dc_image)
+        button_container = QWidget()
+        button_layout = QVBoxLayout()
+        button_container.setLayout(button_layout)
+
+        
+        column_labels = QHBoxLayout()
+        column_labels.setSpacing(10)
+        for col in range(5):
+            label = QLabel(chr(65+col))
+            label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            label.setFixedWidth(80)
+            column_labels.addWidget(label)
+        button_layout.addLayout(column_labels)
+
+        
+        self.rack_grid = QWidget()
         self.rack_layout = QGridLayout(self.rack_grid)
-        self.rack_layout.setSpacing(10)  
+        self.rack_layout.setSpacing(10)
         self.rack_layout.setContentsMargins(0, 0, 0, 0)
 
-        
-        button_width = 80  
-        button_height = 30  
+        button_width = 80
+        button_height = 30
 
-        
         self.rack_buttons = []
         for col in range(5):
             for row in range(12):
                 rack_id = f"{chr(65+col)}{row+1}"
-                btn = QPushButton(rack_id)
+                btn = QPushButton(str(row+1))
                 btn.setObjectName(rack_id)
                 btn.setFixedSize(button_width, button_height)
                 btn.clicked.connect(self.rack_clicked)
                 self.rack_layout.addWidget(btn, row, col)
                 self.rack_buttons.append(btn)
 
+        button_layout.addWidget(self.rack_grid)
+
         
-        self.rack_grid.setGeometry(100, 100, 
-                                button_width*5 + self.rack_layout.spacing()*4, 
-                                button_height*12 + self.rack_layout.spacing()*11)
+        right_layout.addWidget(image_container)
+        right_layout.addWidget(button_container)
+
         
-        self.dc_layout.addWidget(self.dc_image)
-        vis_area.setWidget(self.dc_container)
-        right_layout.addWidget(vis_area, 3)  
+        right_layout.setStretch(0, 3)
+        right_layout.setStretch(1, 1)
+
+        main_layout.addWidget(right_panel)
         
         
         self.data_panel = QGroupBox("Rack Data Entry")
