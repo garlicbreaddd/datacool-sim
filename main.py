@@ -434,8 +434,6 @@ class DataCenterSimulator(QMainWindow):
         main_layout.addWidget(right_panel)
         
         self.setCentralWidget(main_widget)
-        
-        
         self.showMaximized()
     
     def showMaximized(self):
